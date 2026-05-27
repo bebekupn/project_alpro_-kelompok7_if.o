@@ -1,158 +1,287 @@
 #include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <string>
 using namespace std;
 
-struct Produk {
-    int id;
-    string nama;
-    string kategori;
-    int stok;
-    int harga;
-};
-
-struct kategori {
-    string nama_kategori;
-    struct Produk produk[100];
-
-};
-
-struct rak {
+struct PRODUK {
+    string id;
+    string stok;
+    string harga;
+    string nama_produk;
     string nama_rak;
-    struct kategori kategori1[100];
 };
 
-int binarySearch(Produk arr[], int kiri, int kanan, int x) {
-    if (kanan >= kiri) {
-        int mid = kiri + (kanan - kiri) / 2;
+PRODUK produk1[100];
+int total_data = 0;
 
-        if (arr[mid].id == x)
-            return mid;
+void input_data(){
+    int jumlah;
+    cout << "\nmasukkan jumlah barang yang ingin di input :";
+    cin >> jumlah;
 
-        if (arr[mid].id > x)
-            return binarySearch(arr, kiri, mid - 1, x);
-
-        return binarySearch(arr, mid + 1, kanan, x);
+    for(int i = 0; i < jumlah; i++){
+        PRODUK *ptr = &produk1[i];
+        int p = total_data;
+        cout << "\ndata ke -" << p+1 << endl;
+        cout << "masukkan nama rak :"; getline(cin >> ws,ptr->nama_rak);
+        cout << "masukkan nama produk :"; getline(cin >> ws,ptr->nama_produk);
+        cout << "masukkan id produk :"; getline(cin >> ws,ptr->id);
+        cout << "masukkan stok produk :"; getline(cin >> ws,ptr->stok);
+        cout << "masukkan harga produk :"; getline(cin >> ws,ptr->harga);
+        total_data++;
     }
+} 
 
-    return -1;
-}
-
-int main(){
-    cout <<  "hello\n";
-    rak rak1[100];
-    string username, password;
-    int salah = 0;
-
-    // do{
-    //     cout << "== login section ==" << endl;
-    //     cout << "username: ";
-    //     getline(cin, username);
-    //     cout << "password: ";
-    //     getline(cin, password);
-    //     if (username == "admin" && password == "admin123"){
-    //         cout << "Login successful!" << endl;
-    //     } else {
-    //         salah ++ ;
-    //         cout << "Login failed. Invalid username or password." << endl;
-    //     }   
-    // }while (salah < 3 && salah != 0);
-    // if (salah == 3){
-    //     cout << "Too many failed login attempts. Access denied." << endl;
-    //     return 0;
-    // }
-
-    cout << "Login successful!" << endl;
-    int menu;
-    int jum_produk, jum_kategori, jum_rak;
-
-    cout << "== manajemen produk ==" << endl;
-    cout << "menu : " << endl;
-    cout << " 1. input data barang" << endl;
-    cout << " 2. tampilkan data barang(sorted)" << endl;
-    cout << " 3. cari produk berdasarkan id" << endl;
-    cout << " 4. tampilan stok produk berdasarkan kategori" << endl;
-    cout << " 5. ubah detail produk" << endl;
-    cout << " 6. hapus produk(berdasarkan id)" << endl;
-    cout << " 7. keluar" << endl;
-    cout << "pilih menu :";
-    cin >> menu;
-
-    switch (menu){
-        case 1: {
-          
-            cout << "=== Input Data Barang ===" << endl;
-            cout << "berapa bnyak rak yang ingin  ditambahkan? ";
-            cin >> jum_rak;
-            for (int i = 0; i < jum_rak; i++){
-                cout << "Masukkan nama rak: ";
-                cin >> rak1[i].nama_rak;
-                cout << "berapa bnyak kategori yang ingin  ditambahkan? ";
-                cin >> jum_kategori;
-                for (int j = 0; j < jum_kategori; j++){
-                    cout << "Masukkan nama kategori: ";
-                    cin >> rak1[i].kategori1[j].nama_kategori;
-                    cout << "berapa banyak data yang ingin diinput? ";
-                    cin >> jum_produk;
-                    for (int k = 0; k < jum_produk; k++){
-                        cout << "Masukkan data produk ke-" << i + 1 << ":" << endl;
-                        cout << "ID: "; cin >> rak1[i].kategori1[j].produk[k].id;
-                        cout << "Nama: "; cin >> rak1[i].kategori1[j].produk[k].nama;
-                        cout << "Kategori: "; cin >> rak1[i].kategori1[j].produk[k].kategori;
-                        cout << "Stok: "; cin >> rak1[i].kategori1[j].produk[k].stok;
-                        cout << "Harga: "; cin >> rak1[i].kategori1[j].produk[k].harga;
-                    }
-                }
+void BubbleSort(PRODUK arr[],int n){
+    for(int i = 0; i < n-1; i++){
+        for(int j = 0; j < n-i-1; j++){
+            if(arr[j].nama_produk > arr[j+1].nama_produk){
+                swap(arr[j],arr[j+1]);
             }
-
-            for (int i = 0; i < jum_produk - 1; i++){
-                for (int j = 0; j < jum_produk - (i+1); j++ ){
-                    for (int k = 0; k < jum_produk - (i+1); k++){
-                        if (rak1[i].kategori1[j].produk[k].id > rak1[i].kategori1[j].produk[k+1].id){
-                        Produk temp = rak1[i].kategori1[j].produk[k];
-                        rak1[i].kategori1[j].produk[k] = rak1[i].kategori1[j].produk[k+1];
-                        rak1[i].kategori1[j].produk[k+1] = temp;
-                        }
-                    }
-                }
-
-            }
-            break;
-        } case 2: {
-            cout << "tampilkan data barang(sorted)" << endl;
-            for (int i = 0; i < jum_rak; i++){
-                cout << "Rak: " << rak1[i].nama_rak << endl;
-                for (int j = 0; j < jum_kategori; j++){
-                    cout << "Kategori: " << rak1[i].kategori1[j].nama_kategori << endl;
-                    for (int k = 0; k < jum_produk; k++){
-                        cout << "ID: " << rak1[i].kategori1[j].produk[k].id << endl;
-                        cout << "Nama: " << rak1[i].kategori1[j].produk[k].nama << endl;
-                        cout << "Kategori: " << rak1[i].kategori1[j].produk[k].kategori << endl;
-                        cout << "Stok: " << rak1[i].kategori1[j].produk[k].stok << endl;
-                        cout << "Harga: " << rak1[i].kategori1[j].produk[k].harga << endl;
-                    }
-                }
-            }
-            break;
-        }case 3: {
-            int id_cari;
-            cout << "masukkan id produk yang ingin dicari: ";
-            cin >> id_cari;
-            binarySearch(rak1[0].kategori1[0].produk, 0, jum_produk - 1, id_cari);
-            break;
-        }case 4:{
-            cout << "tampilan stok produk berdasarkan kategori" << endl;
-            break;
-        }case 5:{
-            cout << "ubah detail produk" << endl;
-            break;
-        }case 6:{
-            cout << "hapus produk(berdasarkan id)" << endl;
-            break;
-        }case 7:{
-            cout << "keluar" << endl;
-            break;
-        }default:{
-            cout << "pilihan tidak valid" << endl;
         }
     }
-    
+
+}
+
+void tampilkan_data(){
+    if(total_data == 0){
+    cout << "\ndata maasih kosong.\n"; 
+    }else{
+        BubbleSort(produk1, total_data);
+        for(int i = 0; i < total_data; i++){
+            PRODUK *ptr = &produk1[i];
+            cout << i+1 << ". nama produk :" << ptr->nama_produk << endl;
+            cout << "  " << "nama rak :" << ptr->nama_rak << endl;
+            cout << "  " << "id produk :" << ptr->id << endl;
+            cout << "  " << "stok produk :" << ptr->stok << endl;
+            cout << "  " << "harga produk :" << ptr->harga << endl;
+        }
+    }
+}
+
+void binnarySearch(PRODUK arr[], int n, string target){
+    int kiri = 0;
+    int kanan = n-1;
+    bool ditemukan = false;
+    BubbleSort(produk1, total_data);
+    while(kiri <= kanan){
+        int tengah = kiri + (kanan-kiri) /2;
+        if(arr[tengah].nama_produk == target){
+            cout << "data ditemukan pada urutan ke-" << tengah + 1 << ":" << endl;
+            cout << "nama produk :" << arr[tengah].nama_produk << endl;
+            cout << "nama rak :" << arr[tengah].nama_rak << endl;
+            cout << "id produk :" << arr[tengah].id << endl;
+            cout << "stok produk :" << arr[tengah].stok << endl;
+            cout << "harga produk :" << arr[tengah].harga << endl;
+            ditemukan = true;
+            break;
+        }
+        if(arr[tengah].nama_produk < target){
+            kiri = tengah + 1;
+        }else{
+            kanan = tengah - 1;
+        }
+    }
+    if(!ditemukan){
+        cout << "\ndata dengan nama" << target << "tidak ditemukan\n";
+    }
+}
+
+void ubah_detail(){
+    if(total_data == 0){
+        cout << "\ndata masih kosong\n";
+    }
+    string cari;
+    bool ditemukan = false;
+    cout << "masukkan nama produk yang ingin diubah :";
+    getline(cin >> ws, cari);
+
+    for(int i = 0; i < total_data; i ++){
+        PRODUK *ptr = &produk1[i];
+        if (ptr->nama_produk == cari){
+        cout << "====data ditemukan====\n";
+        cout << "====masukkan data baru===";
+        cout << "masukkan nama rak baru : "; getline(cin >> ws, ptr->nama_rak);
+        cout << "masukkan nama produk baru : "; getline(cin >> ws, ptr->nama_produk);
+        cout << "masukkan id produk baru : "; getline(cin >> ws, ptr->id);
+        cout << "masukkan stok produk baru : "; getline(cin >> ws, ptr->stok);
+        cout << "masukkan harga produk baru : "; getline(cin >> ws, ptr->harga);
+        cout << "====data berhasil diganti====\n";
+        ditemukan = true;
+        break;
+        }
+    }
+    if (!ditemukan){
+        cout << "data"<< cari << "tidak ditemukan\n";
+    }
+}
+
+void cari_data(){
+    string cari;
+    cout << "=====binary search=====\n";
+    cout << "masukkan data yang ingin dicari :";
+    getline(cin >> ws, cari);
+    binnarySearch(produk1, total_data, cari);
+}
+
+void exportData(PRODUK arr[], int n) {
+    ofstream file("data_produk.txt");
+    if (file.is_open()) {
+        for (int i = 0; i < n; i++) {
+            file << arr[i].nama_produk << endl;
+            file << arr[i].nama_rak << endl;
+            file << arr[i].id << endl;
+            file << arr[i].stok << endl;
+            file << arr[i].harga << endl;
+        }
+        file.close();
+        cout << "Data berhasil diexport ke 'data_produk.txt'!\n";
+    } else {
+        cout << "Gagal membuka file!\n";
+    }
+}
+
+void importData(PRODUK arr[], int &n) {
+    ifstream file("data_produk.txt");
+    if (file.is_open()) {
+        n = 0; 
+        while (getline(file, arr[n].nama_produk) && getline(file, arr[n].nama_rak) && getline(file, arr[n].id) && getline(file, arr[n].stok) && getline(file, arr[n].harga)) {
+            n++;
+        }
+        file.close();
+        cout << "Data berhasil diimport dari 'data_produk.txt'!\n";
+    } else {
+        cout << "File tidak ditemukan atau gagal dibuka!\n";
+    }
+}
+
+void file(){
+    int menu;
+    cout << "1. export data \n";
+    cout << "2. import data \n";
+    cout << "pilih menu :"; cin >> menu;
+    switch(menu){
+        case 1 :{
+            exportData(produk1, total_data);
+            break;
+        }
+        case 2 :{
+            importData(produk1, total_data);
+            break;
+        }
+
+    }
+}
+
+int fibonacci(int n){
+    if(n <= 1){
+        return n;
+    }else{
+        return fibonacci(n - 1) + (n - 2);
+    }
+}
+
+int long long faktorial(int n){
+    if(n <= 1){
+        return n;
+    }else{
+        return n*faktorial(n-1);
+    }
+
+}  
+
+
+void rekursi(){
+
+    int pilih;
+    cout << "\n=====menu rekursi=====\n";
+    cout << "1. fibonacci\n";
+    cout << "2. faktorial\n";
+    cout << "pilih menu :";
+    cin >> pilih;
+    switch(pilih){
+        case 1 :{
+            int deret = 0;
+            cout << "berapa deret suku pertama fibonacci :";cin >> deret;
+            cout << "deret fibonacci untuk " << deret << "suku pertama :\n";
+            for(int i = 0; i < deret ; i++){
+                cout << fibonacci(i) << " ";
+            } 
+            cout << endl;
+            break;
+        }
+        case 2 :{
+            int n;
+            cout << "masukkan angka faktorial :";cin >> n;
+            cout << "faktorial dari " << n << " :" << faktorial(n) << endl; 
+            break;
+        }
+        default:{
+            cout << "input tidak valid.\n";
+            break;
+        }
+
+    }
+
+}
+
+
+int main(){
+
+    int menu;
+    while(true){
+        cout << "\n== Manajemen Produk Toko ==" << endl;
+        cout << "MENU UTAMA" << endl;
+        cout << " 1. Input data barang" << endl;
+        cout << " 2. Tampilkan data barang (sorted)" << endl;
+        cout << " 3. Cari produk berdasarkan nama produk" << endl;
+        cout << " 4. Ubah detail produk" << endl;
+        cout << " 5. export dan import data" << endl;
+        cout << " 6. rekusi" << endl;
+        cout << " 7. Keluar" << endl;
+        cout << "Pilih menu: ";
+        cin >> menu;
+
+        switch(menu){
+            case 1 :{
+                input_data();
+                break;
+            }
+            case 2 :{
+                tampilkan_data();
+                break;
+            }
+            case 3 :{
+                cari_data();
+                break;
+            }
+            case 4 :{
+                ubah_detail();
+                break;
+            }
+            case 5 :{
+                file();
+                break;
+            }
+            case 6 :{
+                rekursi();
+                break;
+            }
+            case 7 :{
+                cout << "program will be executed\n";
+                return 1;
+            }
+            default :{
+                cout << "input tidak valid\n";
+                break;
+            }
+
+        }
+
+    }
+
+
+
+return 0;
 }
